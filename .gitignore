@@ -1,0 +1,26 @@
+# Virtual env
+env/
+venv/
+ENV/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Databases
+*.db
+
+# Secrets
+.env
+app_123.py
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+build/
+dist/
