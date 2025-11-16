@@ -1,0 +1,89 @@
+/* === Global Modern Tech UI === */
+.panel {
+  backdrop-filter: blur(10px);
+  background: rgba(18, 24, 38, 0.75);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  color: #eaf8ff;
+  font-family: "Poppins", "微軟正黑體", sans-serif;
+  transition: all 0.25s ease;
+}
+
+.panel:hover {
+  border-color: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 15px;
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.15), rgba(0, 150, 255, 0.1));
+  border-bottom: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 14px 14px 0 0;
+  letter-spacing: 0.5px;
+}
+
+.panel-header button {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: #aef9ff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.panel-header button:hover {
+  background: rgba(0, 255, 255, 0.2);
+}
+
+.panel-content {
+  padding: 10px 14px;
+}
+
+.btn-row button {
+  background: rgba(0, 255, 255, 0.12);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: #ccf9ff;
+  border-radius: 6px;
+  margin-left: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-row button:hover {
+  background: rgba(0, 255, 255, 0.25);
+  color: #fff;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+ul li {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #cde8f3;
+  font-size: 13px;
+}
+
+ul li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

@@ -1,0 +1,230 @@
+/* === 警戒區設定面板 === */
+#alarmControlPanel {
+  position: absolute;
+  top: 280px;
+  left: 10px;
+  width: 300px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  z-index: 80;
+}
+
+/* 標題列 */
+#alarmControlPanel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50;
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  color: #ffffff;
+}
+
+/* 標題文字 */
+#alarmControlPanel .panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 展開 / 收合按鈕 */
+#toggleAlarmPanelBtn {
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #333;
+}
+
+/* 主要內容區域 */
+#alarmContent {
+  padding: 10px;
+  display: block;
+}
+
+/* 新增與儲存按鈕 */
+#addAlarmBtn,
+#saveAlarmBtn {
+  background-color: #3498db;
+  border: none;
+  color: white;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#addAlarmBtn:hover,
+#saveAlarmBtn:hover {
+  background-color: #2980b9;
+}
+
+/* 儲存按鈕間距 */
+#saveAlarmBtn {
+  margin-left: 5px;
+  background-color: #27ae60;
+}
+
+#saveAlarmBtn:hover {
+  background-color: #1e8449;
+}
+
+/* 清單區域 */
+#alarmList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* 每個警戒區項目 */
+#alarmList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ececec;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: background-color 0.2s ease;
+}
+
+#alarmList li:hover {
+  background-color: #dfe6e9;
+}
+
+/* checkbox 與文字間距 */
+#alarmList input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* 刪除按鈕 */
+#alarmList button {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#alarmList button:hover {
+  background-color: #c0392b;
+}
+
+/* === 新版警戒區設定排版 === */
+#alarmContent {
+  padding: 10px;
+  background: #f7f7f7;
+}
+
+/* 區塊共用樣式 */
+.alarm-section {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+/* 區塊標題列（例如 新增警戒區 / 資料庫） */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* 標題下的灰線 */
+.section-body {
+  border-top: 1px solid #ddd;
+  padding-top: 6px;
+}
+
+/* 小標籤文字 (例如：存放位置) */
+.sub-label {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* 按鈕列 */
+.btn-row button {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 7px;
+  margin-left: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 13px;
+}
+
+.btn-row button:hover {
+  background-color: #1a242f;
+}
+
+/* 區塊分隔線 */
+.divider {
+  height: 1px;
+  background: #999;
+  margin: 8px 0;
+}
+
+/* 新增與舊的清單區塊 */
+#newAlarmList,
+#oldAlarmList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+/* 清單項目樣式 */
+#newAlarmList li,
+#oldAlarmList li {
+  background-color: #ececec;
+  border-radius: 6px;
+  padding: 5px 8px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+#newAlarmList li:hover,
+#oldAlarmList li:hover {
+  background-color: #dfe6e9;
+}
+
+/* 刪除按鈕樣式 */
+#newAlarmList button,
+#oldAlarmList button {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 12px;
+}
+
+#newAlarmList button:hover,
+#oldAlarmList button:hover {
+  background-color: #c0392b;
+}

@@ -1,0 +1,33 @@
+#toolbar {
+  position: absolute;
+  top: 10px;
+  left: 450px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  z-index: 10;
+  display: flex;
+  flex-direction: row; /* 垂直對齊項目 */
+  justify-content: center; /* 垂直置中按鈕 */
+}
+
+#toolbar button {
+  height: 30px; /* 設定按鈕高度 */
+  margin: 10px 5px; /* 按鈕之間的間距 */
+  background-color: #2c3e50; /* 按鈕背景顏色 */
+  color: white; /* 按鈕文字顏色 */
+  border: none; /* 移除邊框 */
+  border-radius: 5px; /* 圓角按鈕 */
+  font-size: 16px; /* 按鈕文字大小 */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* 滑鼠懸停時的平滑過渡效果 */
+}
+
+#toolbar button:hover {
+  background-color: #0056b3; /* 滑鼠懸停時的較深背景顏色 */
+}
+
+#toolbar button.active {
+  height: 60px; /* 活躍按鈕的特定高度 */
+  line-height: 60px; /* 文字垂直置中 */
+}

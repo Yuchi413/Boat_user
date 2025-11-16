@@ -1,0 +1,50 @@
+#banner {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 350px;
+
+  background-color: #c47d3b; /* 深色背景以增加對比 */
+  color: #ecf0f1; /* 淺色文字 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  z-index: 10;
+  display: flex;
+  align-items: center; /* 垂直置中內容 */
+  padding: 10px 20px;
+}
+
+#banner img {
+  width: 50px; /* logo 大小 */
+  height: auto;
+  margin-right: 15px; /* logo 與標題之間的間距 */
+}
+
+#banner h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+#banner-content {
+  display: flex;
+  align-items: center;
+}
+
+#banner-logo {
+  margin-right: 15px;
+  width: 50px; /* 根據需求調整 */
+  height: 50px; /* 根據需求調整 */
+}
+
+#banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+#timestamp-container {
+  margin-top: 5px; /* 根據需求調整間距 */
+  font-size: 14px;
+}

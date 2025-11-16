@@ -1,0 +1,50 @@
+{
+  "view extension": [
+    114.61365603108344,
+    21.315932348707925,
+    126.38634400971914,
+    26.46004423324949
+  ],
+  "layers": [
+    {
+      "name": "baseLayer",
+      "title": "OSM",
+      "hide": true,
+      "opacity": "1",
+      "type": "UrlTemplateImagery",
+      "options": {
+        "url": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      }
+    },
+    // {
+    //   "name": "layer1",
+    //   "title": "NLSC EMAP",
+    //   "hide": false,
+    //   "opacity": "1",
+    //   "type": "WebMapServiceImagery",
+    //   "options": {
+    //     "url": "https://wms.nlsc.gov.tw/wms",
+    //     "layers": "EMAP",
+    //     "parameters": {
+    //       "transparent": true,
+    //       "format": "image/png"
+    //     }
+    //   }
+    // },
+    {
+      "name": "layer2",
+      "title": "NLSC PHOTO2",
+      "hide": true,
+      "opacity": "1",
+      "type": "WebMapServiceImagery",
+      "options": {
+        "url": "https://wms.nlsc.gov.tw/wms",
+        "layers": "PHOTO2",
+        "parameters": {
+          "transparent": true,
+          "format": "image/png"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+/* 偵測視窗樣式 */
+#detectPanel {
+  position: absolute;
+  top: 180px;
+  left: 10px;
+  width: 390px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  z-index: 80;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #b9af6b;
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  color: #ffffff;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold; /* 設定標題字體粗細 */
+}
+
+/* 切換按鈕樣式 */
+#toggleDetectPanelBtn {
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #333;
+}
+
+.detect-container {
+  top: 10px;
+  right: 10px;
+  max-width: 380px;
+  max-height: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.top-bar {
+  padding: 10px;
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 水平置中對齊元素 */
+}
+
+.detect-window {
+  flex-grow: 1;
+  overflow-y: auto; /* 垂直滾動條 */
+  padding: 10px;
+  background-color: #fafafa;
+}
+
+.input-bar {
+  display: flex;
+  padding: 10px;
+  background-color: #f1f1f1;
+}
+
+.input-bar input {
+  flex-grow: 1; /* 使輸入欄寬度可自適應 */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loading {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  color: #555; /* 載入時的字體顏色 */
+}

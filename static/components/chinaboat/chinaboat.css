@@ -1,0 +1,45 @@
+/* ===== 中國籍船舶查詢面板（完全同步 AIS 面板樣式） ===== */
+#chinaboatControlPanel {
+  position: absolute;
+  top: 230px;
+  left: 10px;
+  width: 300px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  z-index: 80;
+}
+
+/* 標題列 */
+#chinaboatControlPanel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50;
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  color: #ffffff;
+}
+
+#chinaboatControlPanel .panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 收合按鈕 */
+#togglechinaboatPanelBtn {
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #333;
+}
+
+/* 面板內容區 */
+#chinaboatControlContent {
+  padding: 10px;
+  display: block;
+}
