@@ -11,7 +11,7 @@ import torch
 from ultralytics import YOLO
 import numpy as np
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 import cv2  # 使用 cv2.boxPoints 取得旋轉矩形的頂點
 
 # 從 .env 文件中載入環境變數
@@ -22,8 +22,8 @@ app = Flask(__name__)
 CORS(app)
 
 # 載入 YOLO11n OBB 模型（取代原本的 YOLOv8 模型）
-# model = YOLO('yolov8n.pt')  # 舊版 YOLOv8 模型範例
-model = YOLO('yolo11n-obb.pt')  # 使用 OBB 權重模型
+model = YOLO('yolov8n.pt')  # 舊版 YOLOv8 模型範例
+# model = YOLO('yolo11n-obb.pt')  # 使用 OBB 權重模型
 # model = YOLO('yolo11x-obb.pt')  # 使用 OBB 權重模型
 
 # 檢查是否有可用的 CUDA 並將模型移動到 GPU
@@ -34,7 +34,7 @@ else:
     print("未啟用 CUDA，使用 CPU")
 
 # 設定 OpenAI API 金鑰
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # 從環境變數中讀取 Google Places API 金鑰
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY")
@@ -368,166 +368,150 @@ def generate_text():
             return jsonify({'error': '訊息為必填'}), 400
 
         messages = [
-            {"role": "system", "content": '''
+            {
+                "role": "system",
+                "content": '''
 你是個情報分析師，會使用繁體中文回覆。
 回覆時，若回答內容中有地名、地區名稱或景點，請分為兩部分回覆：
 1. 第一部分請完整回答使用者問題；
 2. 第二部分將所有地名及其經緯度座標以 GeoJSON 格式回傳，
    若僅查詢單一地點，請回傳 Point；若有多個地點，請以 FeatureCollection 形式回傳。
-例如：
-  問:
-    請問台北101和淡水老街的位置？
-  回答:
-    台北101位於台北市信義區，而淡水老街位於新北市淡水區，以下為這兩個地點的詳細資訊：
-    
-    geojson ```
-      {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "geometry": { "type": "Point", "coordinates": [121.565, 25.033] },
-            "properties": { "name": "台北101" }
-          },
-          {
-            "type": "Feature",
-            "geometry": { "type": "Point", "coordinates": [121.4440921, 25.168927] },
-            "properties": { "name": "淡水老街" }
-          }
-        ]
-      }
-若偵測到三組以上座標且使用者要求「畫範圍」或「畫多邊形」，請呼叫 get_polygon_from_coordinates 函式。
-             
-在閱讀使用者訊息之後，請先**自動偵測任何看起來像經緯度的數字字串**：
-- 形式可以是「緯度,經度」或「經度, 緯度」，兩個數字以逗號或空白分隔，都允許有 ± 與小數。
-- 如果其中一個數字落在 -90~+90，另一個落在 -180~+180，就判定為座標 (lat, lon)。
-- 找到後，**直接**在回答的第二部分 GeoJSON 中加入對應 Point。
-- properties.name 使用原始字串；若同一則訊息內出現多組座標，請回傳 FeatureCollection。
-
-範例  
-使用者：「我在 25.033, 121.565 見到可疑活動，請分析」  
-助理應回：  
-1. 先用繁體中文分析問題（第一段）  
-若偵測到一個或多個「座標字串」(lat,lon 形式)，
-請一律以字串形式打包成 place_names 陣列，呼叫 get_multiple_locations 函式。    
-             
-             
-```
-若問題中提及單一地名，也請完整回答問題後同時回傳點位資訊並包含 geojson 區塊。
-            '''},
+（中略：這裡保留你原本的說明與範例，不用改，只是我省略）
+'''
+            },
         ]
         messages.append({"role": "user", "content": user_message})
 
-        functions = [
+        # ✅ 使用新版 tools，而不是舊的 functions
+        tools = [
             {
-                "name": "get_location_coordinates",
-                "description": "取得單一指定地名的經緯度",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "place_name": {
-                            "type": "string",
-                            "description": "例如 '台北101'"
-                        }
-                    },
-                    "required": ["place_name"]
-                }
-            },
-            {
-                "name": "get_buffer_polygon",
-                "description": "取得以指定地名為中心，並以指定半徑（公里）劃出的 buffer 圓（GeoJSON 格式），同時回傳中心點",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "place_name": {
-                            "type": "string",
-                            "description": "例如 '台北101'"
+                "type": "function",
+                "function": {
+                    "name": "get_location_coordinates",
+                    "description": "取得單一指定地名的經緯度",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "place_name": {
+                                "type": "string",
+                                "description": "例如 '台北101'"
+                            }
                         },
-                        "radius_km": {
-                            "type": "number",
-                            "description": "例如 2"
-                        }
-                    },
-                    "required": ["place_name", "radius_km"]
+                        "required": ["place_name"]
+                    }
                 }
             },
             {
-                "name": "get_multiple_locations",
-                "description": "取得多個地名的經緯度，並以 GeoJSON 陣列格式回傳",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "place_names": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "例如 ['台北101', '淡水老街']"
-                        }
-                    },
-                    "required": ["place_names"]
-                }
-            },
-            {
-                "name": "get_multiple_buffer_polygons",
-                "description": "取得多個地名，以各自指定半徑劃出 buffer 圓（GeoJSON 格式），並同時回傳中心點",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "locations": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "place_name": {"type": "string", "description": "例如 '三芝雷達站'"},
-                                    "radius_km": {"type": "number", "description": "例如 10"}
-                                },
-                                "required": ["place_name", "radius_km"]
+                "type": "function",
+                "function": {
+                    "name": "get_buffer_polygon",
+                    "description": "取得以指定地名為中心，並以指定半徑（公里）劃出的 buffer 圓（GeoJSON 格式），同時回傳中心點",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "place_name": {
+                                "type": "string",
+                                "description": "例如 '台北101'"
                             },
-                            "description": "例如 [{'place_name': '三芝雷達站', 'radius_km': 10}, {'place_name': '淡水魚人碼頭', 'radius_km': 10}]"
-                        }
-                    },
-                    "required": ["locations"]
+                            "radius_km": {
+                                "type": "number",
+                                "description": "例如 2"
+                            }
+                        },
+                        "required": ["place_name", "radius_km"]
+                    }
                 }
             },
-            ### NEW ###  多點→Polygon
             {
-                "name": "get_polygon_from_coordinates",
-                "description": "將多個經緯度點依順序連線為 GeoJSON Polygon",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "coordinates": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "latitude":  {"type": "number"},
-                                    "longitude": {"type": "number"}
+                "type": "function",
+                "function": {
+                    "name": "get_multiple_locations",
+                    "description": "取得多個地名的經緯度，並以 GeoJSON 陣列格式回傳",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "place_names": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "例如 ['台北101', '淡水老街']"
+                            }
+                        },
+                        "required": ["place_names"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_multiple_buffer_polygons",
+                    "description": "取得多個地名，以各自指定半徑劃出 buffer 圓（GeoJSON 格式），並同時回傳中心點",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "locations": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "place_name": {"type": "string", "description": "例如 '三芝雷達站'"},
+                                        "radius_km": {"type": "number", "description": "例如 10"}
+                                    },
+                                    "required": ["place_name", "radius_km"]
                                 },
-                                "required": ["latitude", "longitude"]
-                            },
-                            "description": "按照連線順序排列的座標列表"
-                        }
-                    },
-                    "required": ["coordinates"]
+                                "description": "例如 [{'place_name': '三芝雷達站', 'radius_km': 10}, {'place_name': '淡水漁人碼頭', 'radius_km': 10}]"
+                            }
+                        },
+                        "required": ["locations"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_polygon_from_coordinates",
+                    "description": "將多個經緯度點依順序連線為 GeoJSON Polygon",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "latitude":  {"type": "number"},
+                                        "longitude": {"type": "number"}
+                                    },
+                                    "required": ["latitude", "longitude"]
+                                },
+                                "description": "按照連線順序排列的座標列表"
+                            }
+                        },
+                        "required": ["coordinates"]
+                    }
                 }
             }
         ]
 
-        response = openai.ChatCompletion.create(
+        # ✅ 新版呼叫方式：client.chat.completions.create
+        response = client.chat.completions.create(
             model="gpt-4.1-mini",
             messages=messages,
-            functions=functions,
-            function_call="auto"
+            tools=tools,
+            tool_choice="auto"
         )
-        response_message = response.choices[0].message
 
-        if response_message.get("function_call"):
-            function_call = response_message["function_call"]
-            function_name = function_call["name"]
+        response_message = response.choices[0].message  # 物件，不是 dict
+
+        # ✅ 新版工具呼叫：tool_calls，而不是 function_call
+        if getattr(response_message, "tool_calls", None):
+            tool_call = response_message.tool_calls[0]
+            function_name = tool_call.function.name
             try:
-                arguments = json.loads(function_call["arguments"])
+                arguments = json.loads(tool_call.function.arguments)
             except Exception as ex:
                 return jsonify({'error': '解析函式參數失敗: ' + str(ex)}), 500
+
+            # ===== 以下邏輯沿用你原本的分支，只是改用 function_name / arguments =====
 
             if function_name == "get_multiple_buffer_polygons":
                 try:
@@ -536,6 +520,7 @@ def generate_text():
                         return jsonify({'error': 'locations 應為列表'}), 400
                 except Exception as ex:
                     return jsonify({'error': '解析 locations 失敗: ' + str(ex)}), 500
+
                 geojson = get_multiple_buffer_polygons(locations)
                 if geojson:
                     answer_text = "以下為各地點對應的圓形範圍及中心點："
@@ -556,6 +541,7 @@ def generate_text():
                         return jsonify({'error': 'place_names 應為列表'}), 400
                 except Exception as ex:
                     return jsonify({'error': '解析 place_names 失敗: ' + str(ex)}), 500
+
                 geojson = get_multiple_locations(place_names)
                 if geojson:
                     answer_text = f"您提到的地點分別為：{', '.join(place_names)}。以下為詳細資訊："
@@ -574,6 +560,7 @@ def generate_text():
                     radius = float(arguments["radius_km"])
                 except Exception as ex:
                     return jsonify({'error': '半徑參數錯誤: ' + str(ex)}), 400
+
                 geojson = get_buffer_polygon(arguments["place_name"], radius)
                 if geojson:
                     answer_text = f"以 {arguments['place_name']} 為中心、半徑 {radius} 公里的範圍及中心點如下："
@@ -615,7 +602,8 @@ def generate_text():
                 else:
                     final_reply = f"找不到 {arguments['place_name']} 的相關資訊。"
                 return jsonify({'response': final_reply}), 200
-            elif function_name == "get_polygon_from_coordinates":      ### NEW ###
+
+            elif function_name == "get_polygon_from_coordinates":
                 try:
                     coords = arguments["coordinates"]
                     if not isinstance(coords, list):
@@ -634,11 +622,14 @@ def generate_text():
                 else:
                     final_reply = "座標數量不足，無法形成多邊形。"
                 return jsonify({'response': final_reply}), 200
+
         else:
-            return jsonify({'response': response_message["content"]}), 200
+            # ✅ 注意：新版 message 是物件，要用 .content
+            return jsonify({'response': response_message.content}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
