@@ -22,8 +22,8 @@ app = Flask(__name__)
 CORS(app)
 
 # 載入 YOLO11n OBB 模型（取代原本的 YOLOv8 模型）
-# model = YOLO('yolov8n.pt')  # 舊版 YOLOv8 模型範例
-model = YOLO('yolo11n-obb.pt')  # 使用 OBB 權重模型
+model = YOLO('yolov8n.pt')  # 舊版 YOLOv8 模型範例
+# model = YOLO('yolo11n-obb.pt')  # 使用 OBB 權重模型
 # model = YOLO('yolo11x-obb.pt')  # 使用 OBB 權重模型
 
 # 檢查是否有可用的 CUDA 並將模型移動到 GPU
