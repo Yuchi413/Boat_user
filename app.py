@@ -376,7 +376,32 @@ def generate_text():
 1. 第一部分請完整回答使用者問題；
 2. 第二部分將所有地名及其經緯度座標以 GeoJSON 格式回傳，
    若僅查詢單一地點，請回傳 Point；若有多個地點，請以 FeatureCollection 形式回傳。
-（中略：這裡保留你原本的說明與範例，不用改，只是我省略）
+
+例如：
+  問:
+    請問台北101和淡水老街的位置？
+  回答:
+    台北101位於台北市信義區，而淡水老街位於新北市淡水區，以下為這兩個地點的詳細資訊：
+    
+    geojson ```
+      {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [121.565, 25.033] },
+            "properties": { "name": "台北101" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [121.4440921, 25.168927] },
+            "properties": { "name": "淡水老街" }
+          }
+        ]
+      }
+    ```
+
+請「一定要」先用自然語言完整回答問題（第一段）， 再決定是否需要進行 function_call。
 '''
             },
         ]
@@ -501,6 +526,8 @@ def generate_text():
         )
 
         response_message = response.choices[0].message  # 物件，不是 dict
+        print("AI 回覆：", response_message)
+        
 
         # ✅ 新版工具呼叫：tool_calls，而不是 function_call
         if getattr(response_message, "tool_calls", None):
